@@ -37,6 +37,8 @@ echo "正在复制应用文件..."
 cp app.py /opt/netdisk/
 cp requirements.txt /opt/netdisk/
 cp gunicorn_config.py /opt/netdisk/
+cp netdisk.service /tmp/
+cp nginx.conf /tmp/
 
 # 设置权限
 chown -R www-data:www-data /opt/netdisk
@@ -57,13 +59,13 @@ pip install -r requirements.txt
 
 # 配置systemd服务
 echo "正在配置systemd服务..."
-cp netdisk.service /etc/systemd/system/
+cp /tmp/netdisk.service /etc/systemd/system/
 systemctl daemon-reload
 systemctl enable netdisk.service
 
 # 配置Nginx
 echo "正在配置Nginx..."
-cp nginx.conf /etc/nginx/sites-available/netdisk
+cp /tmp/nginx.conf /etc/nginx/sites-available/netdisk
 ln -sf /etc/nginx/sites-available/netdisk /etc/nginx/sites-enabled/
 rm -f /etc/nginx/sites-enabled/default
 
@@ -78,7 +80,7 @@ ufw allow 'Nginx Full'
 
 # 启动服务
 echo "正在启动服务..."
-systemctl start netdisk.service
+systemctl restart netdisk.service
 systemctl restart nginx
 
 # 检查服务状态
